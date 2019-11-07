@@ -1,15 +1,15 @@
 var nodemailer = require('nodemailer');
 
-var sender = "emailservice187@gmail.com";
+var sender = "domiotesting187@hotmail.com";
 
 var transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-//   service: 'gmail',
-  port: 587,
-  secure: false, 
+    // host: 'smtp.mail.yahoo.com',
+    // port: 587,
+  service: "Hotmail",
   auth: {
+    // type: "login",
     user: sender,
-    pass: 'samplep@ss'
+    pass: "samplep@ss"
   }
 });
 
