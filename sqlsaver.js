@@ -1,32 +1,20 @@
 const sqlite3 = require('sqlite3').verbose();
-let firstProp = {
-    "address": "1 Castle Ave",
-    "basePrice": 6000.06,
-    "bathrooms": 10.0,
-    "bedrooms": 20.0,
-    "city": "Citadel One",
-    "description": "Romantic hideaway! This property has the lush beauty and privacy of Hana, without the drive! Only 15-20 minutes to the airport, 10 minutes to beaches, 2 minutes to restaurants and shops...on a private gated property with organic nursery. BEAUTIFUL!",
-    "displayPictureUrl": "https://i.imgur.com/0700J1K.jpg",
-    "dynamicDisplayPrice": 6175.06,
-    "id": "410e409f-ac02-4afb-bbbe-8b7ff708647f",
-    "occupancyRate": 0.6,
-    "ownerId": "b7f065af-a43a-45ee-acff-bfa6757abf74",
-    "state": "Casterly Rock",
-    "totalRevenue": 10000.1,
-    "type": "home"
-  }
+const sendMail = require('./email.js');
 
 
-function saveOrUpdate(propID, property) {
-    let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-          console.error(err.message);
-        }
-        console.log('Connected to the database.');
-      });
+
+let db = new sqlite3.Database('./props.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log('Connected to the database.');
+  });
+
+
+  function saveOrUpdate(propID, property) {
 
       let sql = `SELECT * 
-            FROM properties
+            FROM props
             WHERE id  = ?
         `;
 
@@ -40,11 +28,51 @@ function saveOrUpdate(propID, property) {
        
       });
 
+//       db.close()
+
 }
 
 
 function update(property) {
+    let sql = `UPDATE props
+    SET dynamicDisplayPrice = ?,
+     dateTime = ?
+    WHERE id = ?`;
 
+    let id = property.id;
+    let dateTime = Date.now()
+    let display = property.dynamicDisplayPrice;
+
+    db.run(sql, [display, dateTime, id], function(err) {
+        if (err) {
+          return console.error(err.message);
+        }
+        console.log(`Row(s) updated: ${this.changes}`); 
+       
+      });
+
+    emailCheck(property);      
+    //   db.close();
+
+
+}
+
+function emailCheck(property) {
+    let sql = `
+        SELECT * from props
+        WHERE id = ?
+    `
+
+    let id = property.id;
+    db.each(sql, [id], function(err, row) {
+        if (err) {
+          return console.error(err.message);
+        }
+        if ((row.dynamicDisplayPrice > row.basePrice && row.type === "home") || (row.dynamicDisplayPrice < row.basePrice && row.type === "apartment")) {
+            sendMail(row.id, row.dynamicDisplayPrice, row.basePrice, row.type)
+        } 
+
+      });
 
 
 }
@@ -54,24 +82,14 @@ function insert (property) {
     let values = Object.values(property);
     let questionMarks = values.map(item=> "?").join(',')
     
-
-    let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => {
+      db.run(`INSERT INTO props (id, type, dynamicDisplayPrice, basePrice, dateTime) VALUES (?, ?, ?, ?, ?)`, property.id, property.type, property.dynamicDisplayPrice, property.basePrice, Date.now(), function(err) {
         if (err) {
-          console.error(err.message);
-        }
-        console.log('Connected to the database.');
-      });
-    
-    
-      db.run(`INSERT INTO properties (${keys}) VALUES (${questionMarks})`, values, function(err) {
-        if (err) {
-          return console.log(err.message);
+          return console.log(err.message + 2);
         }
         // get the last insert id
         console.log(`A row has been inserted with rowid ${this.lastID}`);
       });
-    
-      db.close();
+    //   db.close();
 }
 
 module.exports = saveOrUpdate;

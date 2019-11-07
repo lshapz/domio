@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-
 const sender = "domiotesting187@hotmail.com";
 
 let transporter = nodemailer.createTransport({
@@ -11,15 +10,21 @@ let transporter = nodemailer.createTransport({
 });
 
 
-function sendMail (to, listing, oldPrice, newPrice, link) {
-    
+function sendMail (listing, displayPrice, basePrice, type) {
+
+    let htmlHome = `
+        For listing with id ${listing}, the display price is ${displayPrice}, which is less than the base price of ${basePrice}.
+    `
+
+    let htmlApt = `
+        For listing with id ${listing}, the display price is ${displayPrice}, which is more than the base price of ${basePrice}.
+    `
+
     let mailOptions = {
       from: sender,
-      to: to,
+      to: "emailservice187@gmail.com",
       subject: `Price Update for listing ${listing}`,
-      html: `
-        Good news! Listing ${listing}, which is on your wishlist, has had a reduction in price from ${oldPrice} to ${newPrice}. Book now <a href="${link}">here</a>!
-      `
+      html: type === "home" ? htmlHome : htmlApt
     };
 
     transporter.sendMail(mailOptions, function(error, info){

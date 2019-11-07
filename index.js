@@ -1,5 +1,4 @@
-const sendMail = require('./email.js');
-const saveListing = require('./sqlSaver.js');
+const saveOrUpdate = require('./sqlSaver.js');
 
 const axios = require('axios');
 // sendMail("emailservice187@gmail.com", "foobar", 230, 200, "http://google.com");
@@ -11,10 +10,7 @@ axios.get(sourceURL, {
       let properties = response.data.properties
 
       properties.forEach(item=>{
-          let id = item.id;
-        
-
-        saveListing(item);
+        setTimeout(()=>{saveOrUpdate(item.id, item)}, 2000)
       })
     // console.log(response.data.properties);
   })

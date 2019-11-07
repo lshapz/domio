@@ -1,8 +1,7 @@
-1) redo database so it only tracks required info [ ​id, type, dynamicDisplayPrice, basePrice, datetime of price]
+okay it works but 
 
-2) add "update" method that updates the database for changed info instead of just adding rows 
+1) it's sending too many emails at once ,figure out how to get that timeout to work 
 
-3) add a follow up to update method that calls the email service as requested 
+2) need to write up the thing about different notification options
 
-    * Apartments: Notify whenever the ​dynamicDisplayPrice​ is l​ ess​ than the ​basePrice
-    * Homes: Notify whenever the d​ ynamicDisplayPrice​ is ​more​ than the ​basePrice
+3) maybe simplify flow on sqlsaver file???
