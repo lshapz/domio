@@ -1,13 +1,10 @@
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
-var sender = "domiotesting187@hotmail.com";
+const sender = "domiotesting187@hotmail.com";
 
-var transporter = nodemailer.createTransport({
-    // host: 'smtp.mail.yahoo.com',
-    // port: 587,
+let transporter = nodemailer.createTransport({
   service: "Hotmail",
   auth: {
-    // type: "login",
     user: sender,
     pass: "samplep@ss"
   }
@@ -15,8 +12,8 @@ var transporter = nodemailer.createTransport({
 
 
 function sendMail (to, listing, oldPrice, newPrice, link) {
-
-    var mailOptions = {
+    
+    let mailOptions = {
       from: sender,
       to: to,
       subject: `Price Update for listing ${listing}`,
@@ -24,7 +21,7 @@ function sendMail (to, listing, oldPrice, newPrice, link) {
         Good news! Listing ${listing}, which is on your wishlist, has had a reduction in price from ${oldPrice} to ${newPrice}. Book now <a href="${link}">here</a>!
       `
     };
-    
+
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
@@ -36,5 +33,4 @@ function sendMail (to, listing, oldPrice, newPrice, link) {
 }
 
 
-
-sendMail("likeaduck@gmail.com", "foobar", 230, 200, "http://google.com")
+module.exports = sendMail;
