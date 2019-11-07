@@ -11,6 +11,9 @@ axios.get(sourceURL, {
       let properties = response.data.properties
 
       properties.forEach(item=>{
+          let id = item.id;
+        
+
         saveListing(item);
       })
     // console.log(response.data.properties);

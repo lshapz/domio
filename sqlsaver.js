@@ -16,6 +16,39 @@ let firstProp = {
     "type": "home"
   }
 
+
+function saveOrUpdate(propID, property) {
+    let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+          console.error(err.message);
+        }
+        console.log('Connected to the database.');
+      });
+
+      let sql = `SELECT * 
+            FROM properties
+            WHERE id  = ?
+        `;
+
+      db.get(sql, [propID], (err, row) => {
+        if (err) {
+          return console.error(err.message);
+        }
+        return row
+          ? update(property)
+          : insert(property);
+       
+      });
+
+}
+
+
+function update(property) {
+
+
+
+}
+
 function insert (property) {
     let keys = Object.keys(property).join(',');
     let values = Object.values(property);
@@ -41,4 +74,4 @@ function insert (property) {
       db.close();
 }
 
-module.exports = insert;
+module.exports = saveOrUpdate;
