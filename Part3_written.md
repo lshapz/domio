@@ -1,0 +1,3 @@
+> Now, let's assume that over time, we'll be adding dozens of different property types with their own messaging rules and messaging platforms (such as sms or push). How do we support this? Would you change anything in your implementation?
+
+I tried to keep the actual notification part as discrete as possible (emailCheck function in sqlService) so that I wouldn't have to change the implementation too much to include other notification options. What I would probably do is change that function to notifCheck. The first part would remain the same - select the row using SQL^. Then, instead of just the one if statement of whether or not they should get an email, I'd pass it to another 
