@@ -1,6 +1,7 @@
 const {saveOrUpdate, closeDb}  = require('./sqlService.js');
 const axios = require('axios');
 const sourceURL = "https://interview.domio.io/properties/";
+const sendMail = require('./emailHelper.js');
 
 axios.get(sourceURL, {
   })
@@ -10,7 +11,11 @@ axios.get(sourceURL, {
 
         let int = setInterval(function(){
         if(counter < response.data.properties.length){
-            saveOrUpdate(properties[counter].id, properties[counter]);
+            let row = properties[counter];
+            saveOrUpdate(row.id, row);
+            if ((row.dynamicDisplayPrice > row.basePrice && row.type === "home") || (row.dynamicDisplayPrice < row.basePrice && row.type === "apartment")) {
+                sendMail(row.id, row.dynamicDisplayPrice, row.basePrice, row.type);
+            } 
             counter++;
         } else
             clearInterval(int);

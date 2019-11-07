@@ -1,5 +1,4 @@
 const sqlite3 = require('sqlite3').verbose();
-const sendMail = require('./emailHelper.js');
 
 let db = new sqlite3.Database('./props.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -56,25 +55,6 @@ function update(property) {
           return console.error(err.message);
         }
         console.log(`Row(s) updated: ${this.changes}`); 
-    });
-
-    emailCheck(property);      
-}
-
-function emailCheck(property) {
-    let sql = `
-        SELECT * from props
-        WHERE id = ?
-    `
-
-    let id = property.id;
-    db.each(sql, [id], function(err, row) {
-        if (err) {
-          return console.error(err.message);
-        }
-        if ((row.dynamicDisplayPrice > row.basePrice && row.type === "home") || (row.dynamicDisplayPrice < row.basePrice && row.type === "apartment")) {
-                sendMail(row.id, row.dynamicDisplayPrice, row.basePrice, row.type);
-        } 
     });
 
 }
