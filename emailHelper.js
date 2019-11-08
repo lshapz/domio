@@ -11,7 +11,11 @@ let transporter = nodemailer.createTransport({
 });
 
 function sendMail (listing, displayPrice, basePrice, type) {
-
+// method sends an email regarding the price change 
+  // listing: string, property.id
+  // displayPrice: number, property.dynamicDisplayPrice
+  // basePrice: number, property.baseprice
+  // type: string, property.type
     let htmlHome = `
         For listing with id ${listing}, the display price is ${displayPrice}, which is less than the base price of ${basePrice}.
     `

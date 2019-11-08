@@ -1,3 +1,4 @@
 > Now, let's assume that over time, we'll be adding dozens of different property types with their own messaging rules and messaging platforms (such as sms or push). How do we support this? Would you change anything in your implementation?
 
 Right now, the notification is implemented by a simple if statement while iterating though the properties. If there were more options, I would probably want a separate function that determines whether or not a notification is needed, and if so which kind(s). It would basically be a big if/then/else, but compartmentalizing it into a separate helper will keep things cleaner and allow the notification requirements to be changed without touching the main API call in index.js. I would give each type of notification its own implementation file (like emailHelper), and if the notificationChecker determines that a notification ought to be sent, it will call the sendMail or sendText or sendPush as necessary. 
+
